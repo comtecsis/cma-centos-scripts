@@ -5,10 +5,11 @@ sudo yum -y install epel-release
 sudo yum -y install ntfs-3g
 
 # Parametrias
-export MOUNT_WIN="NO" # YES | NO
+export MOUNT_WIN="YES" # YES | NO
 export DISK_PARTITION=/dev/sda6
 export USER_SO=synopsis
 export GRADLE_VERSION=gradle-7.0
+export UNRAR_VERSION=rarlinux-x64-5.5.0
 
 # Montando particion primaria de windows
 if [[ $MOUNT_WIN == "YES" ]];
@@ -51,6 +52,20 @@ else
 fi
 sudo cp gradle.sh /etc/profile.d/gradle.sh
 source /etc/profile.d/gradle.sh
+
+echo "=============="
+echo "Install Unrar"
+echo "=============="
+if [[ "$(sudo find /tmp -name $UNRAR_VERSION.tar.gz)" == "" ]] ;
+then
+    wget https://www.rarlab.com/rar/$UNRAR_VERSION.tar.gz -O /tmp/$UNRAR_VERSION.tar.gz
+    sudo mkdir -p /opt/unrar
+    sudo tar -xf /tmp/$UNRAR_VERSION.tar.gz -C /opt
+    sudo update-alternatives --install /usr/bin/rar rar /opt/rar/rar 0
+    sudo update-alternatives --install /usr/bin/unrar unrar /opt/rar/unrar 0
+else
+    echo "WARN: $UNRAR_VERSION ya esta descargado."
+fi
 
 echo "¡Listo!"
 
